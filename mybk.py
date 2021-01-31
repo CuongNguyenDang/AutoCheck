@@ -57,12 +57,12 @@ for o, n in zip(old, new):
         subprocess.Popen(['notify-send',n[:-1]])
 
         if not isUpdate:
-            if platform.system == 'Linux':
+            if platform.system() == 'Linux':
                 while 1:
                     os.system('play -nq -t alsa synth 1 sine 440') #Beep
                     rlist, _, _ = select([sys.stdin], [], [], 1)
                     if rlist: break                
-            elif platform.system == 'Windows':
+            elif platform.system() == 'Windows':
                 #TODO: Beep for Windows
                 pass
         
