@@ -7,19 +7,27 @@ from selenium .webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from select import select
+import subprocess
+import platform
 
 from dotenv import load_dotenv
 load_dotenv('.env')
 
-driver = webdriver.Chrome()
+#hide driver
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+driver = webdriver.Chrome(options=chrome_options)
+
 driver.get('http://mybk.hcmut.edu.vn/stinfo/')
 
+#login
 username_text = driver.find_element_by_name('username')
 username_text.send_keys(os.environ.get('USRNAME'))
 password_text = driver.find_element_by_name('password')
 password_text.send_keys(os.environ.get('PASSWORD'))
 password_text.send_keys(Keys.RETURN)
 
+#get grade table
 grade_button = driver.find_element_by_partial_link_text("Bảng điểm")
 grade_button.click()
 wait = WebDriverWait(driver, 10).until(
@@ -35,6 +43,7 @@ for row in rows[:-1]:
     if len(content) > 1:
         new += [content[1].text + '\t' + content[-1].text + '\n']
 
+#compare with old table
 f = open('out.txt')
 old = f.readlines()
 
@@ -44,19 +53,23 @@ for o, n in zip(old, new):
         if not isUpdate: 
             print(f"Press any key to exit...")
             
-        print(n[:-1])
+        print(n[:-1]) #ignore endline
+        subprocess.Popen(['notify-send',n[:-1]])
 
         if not isUpdate:
-            while 1:
-                os.system('play -nq -t alsa synth 1 sine 440')
-                rlist, _, _ = select([sys.stdin], [], [], 1)
-                if rlist: break                
+            if platform.system == 'Linux':
+                while 1:
+                    os.system('play -nq -t alsa synth 1 sine 440') #Beep
+                    rlist, _, _ = select([sys.stdin], [], [], 1)
+                    if rlist: break                
+            elif platform.system == 'Windows':
+                #TODO: Beep for Windows
+                pass
         
         isUpdate = True
-
-
 f.close()
 
+#write new grade table
 f = open('out.txt','w')
 f.writelines(new)
 f.close()
