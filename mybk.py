@@ -92,6 +92,7 @@ if __name__ == '__main__':
             print(e)
         
         print(f"Last modified: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+        time.sleep(300)
 
 
     
