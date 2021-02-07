@@ -47,7 +47,7 @@ def crawl_score_ppl(print_log = True):
 
     f = open('out.csv','w')
     f.write('"Name","Score",\n')
-    for url in urls[262:]:
+    for url in urls:
         try:
             driver.get(url)
         except:
