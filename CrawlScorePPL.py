@@ -20,7 +20,7 @@ def crawl_score_ppl(print_log = True):
     #hide driver
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(options=chrome_options)
 
     driver.get('https://sso.hcmut.edu.vn/cas/login?service=http%3A%2F%2Fe-learning.hcmut.edu.vn%2Flogin%2Findex.php%3FauthCAS%3DCAS')
@@ -47,14 +47,16 @@ def crawl_score_ppl(print_log = True):
 
     f = open('out.csv','w')
     f.write('"Name","Score",\n')
-    for url in urls:
+    for url in urls[382:]:
+        driver.get(url)
+        
         try:
-            driver.get(url)
+            wait = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Điểm")))
         except:
             time.sleep(3)
             driver.get(url)
-
-        wait = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Điểm")))
+            wait = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Điểm")))
+        
         score_url = driver.find_element_by_partial_link_text('Điểm')
         score_url.click()
 
