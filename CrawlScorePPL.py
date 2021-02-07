@@ -47,8 +47,12 @@ def crawl_score_ppl(print_log = True):
 
     f = open('out.csv','w')
     f.write('"Name","Score",\n')
-    for url in urls:
-        driver.get(url)
+    for url in urls[262:]:
+        try:
+            driver.get(url)
+        except:
+            time.sleep(3)
+            driver.get(url)
 
         wait = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Điểm")))
         score_url = driver.find_element_by_partial_link_text('Điểm')
