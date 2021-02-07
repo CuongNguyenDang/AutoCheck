@@ -20,7 +20,7 @@ def crawl_score_ppl(print_log = True):
     #hide driver
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--no-sandbox')
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(options=chrome_options)
 
     driver.get('https://sso.hcmut.edu.vn/cas/login?service=http%3A%2F%2Fe-learning.hcmut.edu.vn%2Flogin%2Findex.php%3FauthCAS%3DCAS')
@@ -39,10 +39,11 @@ def crawl_score_ppl(print_log = True):
     
     driver.find_element_by_xpath("//button[text()='Clear filters']").click()
     driver.find_element_by_xpath("//button[text()='Apply filters']").click()
-
+    time.sleep(3)
     tbody = driver.find_element_by_tag_name('tbody')
     a = tbody.find_elements_by_class_name('d-inline-block')
     urls = [x.get_attribute('href') for x in a]
+    print('TOTAL: ',len(urls))
 
     f = open('out.csv','w')
     f.write('"Name","Score",\n')
